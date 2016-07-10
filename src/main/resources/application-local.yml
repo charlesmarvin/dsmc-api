@@ -1,4 +1,6 @@
 spring.profiles: local
+server:
+  port: 9000
 spring.data.mongodb.database: dsmc
 spring.data.mongodb.uri: mongodb://localhost:27017
 security.user.password: password
