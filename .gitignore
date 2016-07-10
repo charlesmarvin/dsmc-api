@@ -1,0 +1,12 @@
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/
+
+#Gradle
+!gradle-wrapper.jar
+.gradle/
+.gradletasknamecache
+gradle-app.setting
+build/

@@ -1,0 +1,3 @@
+spring.profiles: prod
+spring.data.mongodb.database: dsmc
+spring.data.mongodb.uri: mongodb://localhost:27017

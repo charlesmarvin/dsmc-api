@@ -1,0 +1,9 @@
+---
+applications:
+- name: dsmc-service
+  memory: 256MB
+  instances: 2
+  path: build/libs/dsmc-service-1.0.0-SNAPSHOT.zip
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  services:
+     - mongodb
