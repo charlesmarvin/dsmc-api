@@ -1,3 +1,1 @@
-The OpenShift `diy` cartridge documentation can be found at:
-
-http://openshift.github.io/documentation/oo_cartridge_guide.html#diy
+RESTful API using Spring Boot and Spring Data Mongo
