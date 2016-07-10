@@ -37,26 +37,6 @@ public class AdminController {
         this.modelMapper = modelMapper;
     }
 
-    private User fromDto(UserDTO dto) {
-        if (dto == null) return null;
-        return modelMapper.map(dto, User.class);
-    }
-
-    private UserDTO toDto(User user) {
-        if (user == null) return null;
-        return modelMapper.map(user, UserDTO.class);
-    }
-
-    private Company fromDto(CompanyDTO dto) {
-        if (dto == null) return null;
-        return modelMapper.map(dto, Company.class);
-    }
-
-    private CompanyDTO toDto(Company company) {
-        if (company == null) return null;
-        return modelMapper.map(company, CompanyDTO.class);
-    }
-
     @RequestMapping(method = RequestMethod.POST, path = "/companies")
     public ResponseEntity<?> addCompany(@RequestBody CompanyDTO companyDTO) {
         Company company = adminService.createCompany(fromDto(companyDTO));
@@ -72,8 +52,7 @@ public class AdminController {
     @RequestMapping(method = RequestMethod.GET, path = "/companies")
     public List<CompanyDTO> getCompanies(@RequestParam(value = "page", required = false) Integer page,
                                          @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        //TODO add paging support
-        return adminService.getCompanies()
+        return adminService.getCompanies(page, pageSize)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -111,5 +90,25 @@ public class AdminController {
                 .buildAndExpand(user.getId())
                 .toUri());
         return new ResponseEntity<>(null, httpHeaders, HttpStatus.CREATED);
+    }
+
+    private User fromDto(UserDTO dto) {
+        if (dto == null) return null;
+        return modelMapper.map(dto, User.class);
+    }
+
+    private UserDTO toDto(User user) {
+        if (user == null) return null;
+        return modelMapper.map(user, UserDTO.class);
+    }
+
+    private Company fromDto(CompanyDTO dto) {
+        if (dto == null) return null;
+        return modelMapper.map(dto, Company.class);
+    }
+
+    private CompanyDTO toDto(Company company) {
+        if (company == null) return null;
+        return modelMapper.map(company, CompanyDTO.class);
     }
 }

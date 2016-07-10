@@ -10,9 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Created by charlesmarvin on 7/9/16.
- */
 @Service
 public class MongoAdminService implements AdminService {
     private static final int DEFAULT_PAGE_START = 0;
@@ -34,14 +31,20 @@ public class MongoAdminService implements AdminService {
 
     @Override
     public List<Company> getCompanies() {
-        return getCompanies(DEFAULT_PAGE_START, DEFAULT_PAGE_SIZE);
+        return companyRepository.findAll();
     }
 
     @Override
-    public List<Company> getCompanies(int page, int pageSize) {
-        Pageable pageable = new PageRequest(page, pageSize);
+    public List<Company> getCompanies(Integer page, Integer pageSize) {
+        Pageable pageable = getPageable(page, pageSize);
         Page<Company> companies = companyRepository.findAll(pageable);
         return companies.getContent();
+    }
+
+    private Pageable getPageable(Integer page, Integer pageSize) {
+        int pageInt = (page == null) ? DEFAULT_PAGE_START : page;
+        int pageSizeInt = (pageSize == null) ? DEFAULT_PAGE_SIZE : pageSize;
+        return new PageRequest(pageInt, pageSizeInt);
     }
 
     @Override
