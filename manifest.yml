@@ -1,7 +1,7 @@
 ---
 applications:
 - name: dsmc-api
-  memory: 256MB
+  memory: 512MB
   instances: 2
   path: build/libs/dsmc-api-1.0.0-SNAPSHOT.zip
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
