@@ -6,4 +6,4 @@ applications:
   path: build/libs/dsmc-api-1.0.0-SNAPSHOT.zip
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   services:
-     - mongodb
+     - dsmc-mongodb
