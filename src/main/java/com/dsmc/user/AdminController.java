@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @ResponseBody
-@RequestMapping("/admin")
+@RequestMapping("api/v1/admin")
 @SuppressWarnings("unused")
 public class AdminController {
 
