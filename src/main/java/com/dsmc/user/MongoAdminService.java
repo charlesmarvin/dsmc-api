@@ -1,5 +1,6 @@
 package com.dsmc.user;
 
+import com.dsmc.common.service.EncryptionService;
 import com.dsmc.user.domain.Company;
 import com.dsmc.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -16,12 +18,15 @@ public class MongoAdminService implements AdminService {
     private static final int DEFAULT_PAGE_SIZE = 100;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final EncryptionService encryptionService;
 
     @Autowired
-    public MongoAdminService(CompanyRepository companyRepository, 
-                             UserRepository userRepository) {
+    public MongoAdminService(CompanyRepository companyRepository,
+                             UserRepository userRepository,
+                             EncryptionService encryptionService) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
+        this.encryptionService = encryptionService;
     }
 
     @Override
@@ -71,6 +76,7 @@ public class MongoAdminService implements AdminService {
     public User createCompanyUser(String companyId, User user) {
         Company company = companyRepository.findOne(companyId);
         user.setCompany(company);
+        user.setPassword(new String(Base64.getEncoder().encode(encryptionService.hash(user.getPassword()))));
         return userRepository.insert(user);
     }
 

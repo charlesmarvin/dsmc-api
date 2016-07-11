@@ -1,6 +1,7 @@
 package com.dsmc.user.domain;
 
-import com.dsmc.common.Status;
+import com.dsmc.common.domain.QueryableSecureValue;
+import com.dsmc.common.domain.Status;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,10 +12,10 @@ public class User {
     private String id;
     private String username;
     private String password;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
+    private QueryableSecureValue firstName;
+    private QueryableSecureValue lastName;
+    private QueryableSecureValue email;
+    private QueryableSecureValue phone;
     private Status status;
     @DBRef
     private Company company;
@@ -43,35 +44,35 @@ public class User {
         this.password = password;
     }
 
-    public String getFirstName() {
+    public QueryableSecureValue getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(QueryableSecureValue firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
+    public QueryableSecureValue getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(QueryableSecureValue lastName) {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
+    public QueryableSecureValue getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(QueryableSecureValue email) {
         this.email = email;
     }
 
-    public String getPhone() {
+    public QueryableSecureValue getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(QueryableSecureValue phone) {
         this.phone = phone;
     }
 

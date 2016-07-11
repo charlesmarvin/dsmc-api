@@ -1,7 +1,6 @@
 package com.dsmc.user.dto;
 
-import com.dsmc.common.Status;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import com.dsmc.common.domain.Status;
 
 /**
  * Created by charlesmarvin on 7/9/16.

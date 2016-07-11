@@ -1,6 +1,6 @@
 package com.dsmc.user.domain;
 
-import com.dsmc.common.Status;
+import com.dsmc.common.domain.Status;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

@@ -1,5 +1,6 @@
 package com.dsmc.user;
 
+import com.dsmc.common.service.EncryptionService;
 import com.dsmc.user.domain.Company;
 import com.dsmc.user.domain.User;
 import com.dsmc.user.dto.CompanyDTO;
@@ -29,11 +30,15 @@ public class AdminController {
 
 
     private final AdminService adminService;
+    private final EncryptionService encryptionService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public AdminController(AdminService adminService, ModelMapper modelMapper) {
+    public AdminController(AdminService adminService,
+                           EncryptionService encryptionService,
+                           ModelMapper modelMapper) {
         this.adminService = adminService;
+        this.encryptionService = encryptionService;
         this.modelMapper = modelMapper;
     }
 
@@ -81,8 +86,7 @@ public class AdminController {
     @RequestMapping(method = RequestMethod.POST, path = "/companies/{companyId}/users")
     public ResponseEntity<?> addCompanyUser(@PathVariable("companyId") String companyId,
                                             @RequestBody UserDTO newUser) {
-
-        User user = adminService.createCompanyUser(companyId, modelMapper.map(newUser, User.class));
+        User user = adminService.createCompanyUser(companyId, fromDto(newUser));
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -94,12 +98,22 @@ public class AdminController {
 
     private User fromDto(UserDTO dto) {
         if (dto == null) return null;
-        return modelMapper.map(dto, User.class);
+        User user = modelMapper.map(dto, User.class);
+        user.setEmail(encryptionService.encryptQueryable(dto.getEmail()));
+        user.setPhone(encryptionService.encryptQueryable(dto.getPhone()));
+        user.setFirstName(encryptionService.encryptQueryable(dto.getFirstName()));
+        user.setLastName(encryptionService.encryptQueryable(dto.getLastName()));
+        return user;
     }
 
     private UserDTO toDto(User user) {
         if (user == null) return null;
-        return modelMapper.map(user, UserDTO.class);
+        UserDTO dto = modelMapper.map(user, UserDTO.class);
+        dto.setEmail(encryptionService.decrypt(user.getEmail()));
+        dto.setPhone(encryptionService.decrypt(user.getPhone()));
+        dto.setFirstName(encryptionService.decrypt(user.getFirstName()));
+        dto.setLastName(encryptionService.decrypt(user.getLastName()));
+        return dto;
     }
 
     private Company fromDto(CompanyDTO dto) {

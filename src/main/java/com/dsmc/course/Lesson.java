@@ -1,6 +1,6 @@
 package com.dsmc.course;
 
-import com.dsmc.common.Address;
+import com.dsmc.common.domain.Address;
 import com.dsmc.instructor.Instructor;
 import com.dsmc.student.Student;
 import com.dsmc.user.domain.Company;

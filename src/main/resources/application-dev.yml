@@ -1,7 +1,7 @@
-spring.profiles: prod
+spring.profiles: dev
 spring.data.mongodb.database: ${spring.data.mongodb.database}
 spring.data.mongodb.uri: ${spring.data.mongodb.uri}
 
 app.security.encryption.key: ${app.security.encryption.key}
 app.security.encryption.salt: ${app.security.encryption.salt}
-app.security.encryption.algo: ${app.security.encryption.algo}
+app.security.encryption.algo: AES

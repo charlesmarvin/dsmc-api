@@ -1,4 +1,4 @@
-package com.dsmc.common;
+package com.dsmc.common.domain;
 
 public enum Status {Active, Inactive, Deleted}
 

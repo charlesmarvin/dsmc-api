@@ -1,6 +1,6 @@
 package com.dsmc.instructor;
 
-import com.dsmc.common.Address;
+import com.dsmc.common.domain.Address;
 import com.dsmc.user.domain.Company;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
