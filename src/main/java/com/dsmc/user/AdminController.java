@@ -96,6 +96,14 @@ public class AdminController {
         return new ResponseEntity<>(null, httpHeaders, HttpStatus.CREATED);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, path = "/companies/{companyId}/users/{userId}")
+    public ResponseEntity<?> updateCompanyUser(@PathVariable("companyId") String companyId,
+                                               @PathVariable("userId") String userId,
+                                               @RequestBody UserDTO newUser) {
+        adminService.updateCompanyUser(companyId, userId, fromDto(newUser));
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
     private User fromDto(UserDTO dto) {
         if (dto == null) return null;
         User user = modelMapper.map(dto, User.class);

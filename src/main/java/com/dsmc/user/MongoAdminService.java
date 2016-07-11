@@ -81,9 +81,15 @@ public class MongoAdminService implements AdminService {
     }
 
     @Override
-    public void updateCompanyUser(String companyId, User user) {
-        Company company = companyRepository.findOne(companyId);
-        user.setCompany(company);
-        userRepository.save(user);
+    public void updateCompanyUser(String companyId, String userId, User userUpdates) {
+        User user = userRepository.findOne(userId);
+        if (user.getCompany() == null || !companyId.equals(user.getCompany().getId())) {
+            throw new RuntimeException("Illegal attempt to update user"); //TODO make exception class
+        }
+        userUpdates.setId(userId);
+        if (userUpdates.getPassword() != null) {
+            userUpdates.setPassword(new String(Base64.getEncoder().encode(encryptionService.hash(userUpdates.getPassword()))));
+        }
+        userRepository.save(userUpdates);
     }
 }

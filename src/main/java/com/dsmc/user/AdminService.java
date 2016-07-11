@@ -22,5 +22,5 @@ public interface AdminService {
 
     User createCompanyUser(String companyId, User user);
 
-    void updateCompanyUser(String companyId, User user);
+    void updateCompanyUser(String companyId, String userId, User user);
 }
