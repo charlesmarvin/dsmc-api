@@ -24,5 +24,7 @@ public interface AdminService {
 
     void updateCompanyUser(String companyId, String userId, User user);
 
+    boolean resendCompanyAccountVerificationByEmail(String companyContactEmail);
+
     boolean verifyCompanyAccountByEmail(String companyContactEmail, String verificationCode);
 }

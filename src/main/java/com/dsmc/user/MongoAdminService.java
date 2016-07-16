@@ -77,11 +77,17 @@ public class MongoAdminService implements AdminService {
         company.setVerified(false);
         company.setStatus(Status.Unverified);
         Company newCompany = companyRepository.insert(company);
+        sendVerificationEmail(newCompany);
+
+        return newCompany;
+    }
+
+    private void sendVerificationEmail(Company company) {
         //TODO the below should be done off the back of a queued message
         // raise the message here and create an async handler to consume and process it
         Verification verification = new Verification();
-        verification.setCompanyId(newCompany.getId());
-        verification.setIdentifier(newCompany.getEmail());
+        verification.setCompanyId(company.getId());
+        verification.setIdentifier(company.getEmail());
         verification.setVerificationCode(randomCodeGenerator.generatePaddedNumericCode(verificationCodeLength));
         verificationRepository.insert(verification);
         try {
@@ -94,9 +100,8 @@ public class MongoAdminService implements AdminService {
                     "onboarding-company-account-verification", //TODO Externalize this
                     data);
         } catch (Exception e) {
-            //TODO retry?
+            throw new RuntimeException("Error sending verification email");
         }
-        return newCompany;
     }
 
     @Override
@@ -133,6 +138,16 @@ public class MongoAdminService implements AdminService {
             userUpdates.setPassword(new String(Base64.getEncoder().encode(encryptionService.hash(userUpdates.getPassword()))));
         }
         userRepository.save(userUpdates);
+    }
+
+    @Override
+    public boolean resendCompanyAccountVerificationByEmail(String companyContactEmail) {
+        Company company = companyRepository.findByEmail(companyContactEmail);
+        if (company != null && company.getStatus() == Status.Unverified) {
+            sendVerificationEmail(company);
+            return true;
+        }
+        return false;
     }
 
     @Override

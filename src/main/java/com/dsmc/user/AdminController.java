@@ -62,6 +62,12 @@ public class AdminController {
         return new ResponseEntity<>(verified ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
+    @RequestMapping(method = RequestMethod.POST, path = "/company/verify/code")
+    public ResponseEntity<?> verifyCompany(@RequestBody String email) {
+        boolean verified = adminService.resendCompanyAccountVerificationByEmail(email);
+        return new ResponseEntity<>(verified ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
     @RequestMapping(method = RequestMethod.GET, path = "/companies")
     public List<CompanyDTO> getCompanies(@RequestParam(value = "page", required = false) Integer page,
                                          @RequestParam(value = "pageSize", required = false) Integer pageSize) {
