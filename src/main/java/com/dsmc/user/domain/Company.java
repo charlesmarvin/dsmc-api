@@ -1,8 +1,11 @@
 package com.dsmc.user.domain;
 
 import com.dsmc.common.domain.Status;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
 
 @Document
 public class Company {
@@ -10,6 +13,10 @@ public class Company {
     private String id;
     private String name;
     private Status status;
+    private String email;
+    private boolean verified;
+    @CreatedDate
+    private Date createdOn;
 
     public String getId() {
         return id;
@@ -33,5 +40,25 @@ public class Company {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
     }
 }

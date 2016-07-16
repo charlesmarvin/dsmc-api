@@ -8,6 +8,7 @@ import com.dsmc.common.domain.Status;
 public class CompanyDTO {
     private String id;
     private String name;
+    private String email;
     private Status status;
 
     public String getId() {
@@ -32,5 +33,13 @@ public class CompanyDTO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

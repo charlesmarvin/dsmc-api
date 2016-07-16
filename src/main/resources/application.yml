@@ -1,3 +1,15 @@
 spring.profiles.active: dev
 management.add-application-context-header: false
 server.server-header: unspecified
+app.verification-code.length: 6
+
+spring.data.mongodb.database: ${spring.data.mongodb.database}
+spring.data.mongodb.uri: ${spring.data.mongodb.uri}
+
+app.security.encryption.key: ${app.security.encryption.key}
+app.security.encryption.salt: ${app.security.encryption.salt}
+app.security.encryption.algo: ${app.security.encryption.algo}
+
+app.mailgun.clientId: ${app.mailgun.clientId}
+app.mailgun.apikey: ${app.mailgun.apikey}
+app.mailgun.endpoint: ${app.mailgun.endpoint}

@@ -1,16 +1,23 @@
 package com.dsmc.user;
 
+import com.dsmc.common.adapters.email.EmailAdapter;
+import com.dsmc.common.domain.Status;
 import com.dsmc.common.service.EncryptionService;
+import com.dsmc.common.util.RandomCodeGenerator;
 import com.dsmc.user.domain.Company;
 import com.dsmc.user.domain.User;
+import com.dsmc.user.domain.Verification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MongoAdminService implements AdminService {
@@ -18,15 +25,27 @@ public class MongoAdminService implements AdminService {
     private static final int DEFAULT_PAGE_SIZE = 100;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final VerificationRepository verificationRepository;
+    private final RandomCodeGenerator randomCodeGenerator;
+    private final int verificationCodeLength;
     private final EncryptionService encryptionService;
+    private final EmailAdapter emailAdapter;
 
     @Autowired
     public MongoAdminService(CompanyRepository companyRepository,
                              UserRepository userRepository,
-                             EncryptionService encryptionService) {
+                             VerificationRepository verificationRepository,
+                             EncryptionService encryptionService,
+                             EmailAdapter emailAdapter,
+                             RandomCodeGenerator randomCodeGenerator,
+                             @Value("${app.verification-code.length}") int verificationCodeLength) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.encryptionService = encryptionService;
+        this.emailAdapter = emailAdapter;
+        this.verificationRepository = verificationRepository;
+        this.randomCodeGenerator = randomCodeGenerator;
+        this.verificationCodeLength = verificationCodeLength;
     }
 
     @Override
@@ -54,7 +73,28 @@ public class MongoAdminService implements AdminService {
 
     @Override
     public Company createCompany(Company company) {
-        return companyRepository.insert(company);
+        company.setVerified(false);
+        company.setStatus(Status.Unverified);
+        Company newCompany = companyRepository.insert(company);
+        //TODO the below should be done off the back of a queued message
+        // raise the message here and create an async handler to consume and process it
+        Verification verification = new Verification();
+        verification.setIdentifier(newCompany.getEmail());
+        verification.setVerificationCode(randomCodeGenerator.generatePaddedNumericCode(verificationCodeLength));
+        verificationRepository.insert(verification);
+        try {
+            Map<String, Object> data = new HashMap<>();
+            data.put("code", verification.getVerificationCode());
+            data.put("name", company.getName());
+            emailAdapter.send("Client Services <clientservices@24sixty.io>",
+                    company.getEmail(),
+                    "Welcome",
+                    "onboarding-company-account-verification", //TODO Externalize this
+                    data);
+        } catch (Exception e) {
+            //TODO retry?
+        }
+        return newCompany;
     }
 
     @Override

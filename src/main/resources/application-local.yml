@@ -5,6 +5,5 @@ spring.data.mongodb.database: dsmc
 spring.data.mongodb.uri: mongodb://localhost:27017
 security.user.password: password
 
-app.security.encryption.key: Wy871XfvqCp9rTKG
-app.security.encryption.salt: 8XdU6BDHlwPaay8IyzyCmqr7R4lWCg7B1jJBT9xKruYKo3ZN5cglzqOFOpFHxrB7
-app.security.encryption.algo: AES
+app.mailgun.endpoint: https://api.mailgun.net/v3/24sixty.io/messages
+app.mailgun.clientId: api
