@@ -7,6 +7,7 @@ import com.dsmc.common.util.RandomCodeGenerator;
 import com.dsmc.user.domain.Company;
 import com.dsmc.user.domain.User;
 import com.dsmc.user.domain.Verification;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -79,6 +80,7 @@ public class MongoAdminService implements AdminService {
         //TODO the below should be done off the back of a queued message
         // raise the message here and create an async handler to consume and process it
         Verification verification = new Verification();
+        verification.setCompanyId(newCompany.getId());
         verification.setIdentifier(newCompany.getEmail());
         verification.setVerificationCode(randomCodeGenerator.generatePaddedNumericCode(verificationCodeLength));
         verificationRepository.insert(verification);
@@ -131,5 +133,27 @@ public class MongoAdminService implements AdminService {
             userUpdates.setPassword(new String(Base64.getEncoder().encode(encryptionService.hash(userUpdates.getPassword()))));
         }
         userRepository.save(userUpdates);
+    }
+
+    @Override
+    public boolean verifyCompanyAccountByEmail(String companyContactEmail, String verificationCode) {
+        Verification verification = verificationRepository.findByIdentifier(companyContactEmail);
+        if (verification == null) {
+            return false;
+        }
+        if (StringUtils.equals(verificationCode, verification.getVerificationCode())) {
+            Company company = companyRepository.findOne(verification.getCompanyId());
+            if (company == null) {
+                return false;
+            }
+            company.setStatus(Status.Active);
+            companyRepository.save(company);
+            verificationRepository.delete(verification.getId());
+            return true;
+        } else {
+            verification.setVerificationAttempts(verification.getVerificationAttempts() + 1);
+            verificationRepository.save(verification);
+            return false;
+        }
     }
 }

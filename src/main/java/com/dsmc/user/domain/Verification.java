@@ -15,6 +15,7 @@ public class Verification {
     private int verificationAttempts;
     @CreatedDate
     private Date createdOn;
+    private String companyId;
 
     public String getId() {
         return id;
@@ -54,5 +55,13 @@ public class Verification {
 
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }

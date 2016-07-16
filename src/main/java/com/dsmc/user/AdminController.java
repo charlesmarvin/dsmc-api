@@ -4,6 +4,7 @@ import com.dsmc.common.service.EncryptionService;
 import com.dsmc.user.domain.Company;
 import com.dsmc.user.domain.User;
 import com.dsmc.user.dto.CompanyDTO;
+import com.dsmc.user.dto.CompanyVerificationDTO;
 import com.dsmc.user.dto.UserDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,13 @@ public class AdminController {
                 .buildAndExpand(company.getId())
                 .toUri());
         return new ResponseEntity<>(null, httpHeaders, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/company/verify")
+    public ResponseEntity<?> verifyCompany(@RequestBody CompanyVerificationDTO companyVerificationDTO) {
+        boolean verified = adminService.verifyCompanyAccountByEmail(companyVerificationDTO.getIdentifier(),
+                companyVerificationDTO.getVerificationCode());
+        return new ResponseEntity<>(verified ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/companies")
