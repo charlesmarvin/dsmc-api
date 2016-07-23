@@ -14,6 +14,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Security;
+import java.util.Base64;
 
 @Service
 public class EncryptionServiceImpl implements EncryptionService {
@@ -43,7 +44,6 @@ public class EncryptionServiceImpl implements EncryptionService {
         } catch (Exception e) {
             throw new RuntimeException("Initialization failed.", e);
         }
-
     }
 
     @Override
@@ -83,5 +83,10 @@ public class EncryptionServiceImpl implements EncryptionService {
     public byte[] hash(String value) {
         if (value == null) return null;
         return hasher.doFinal((salt + value).getBytes());
+    }
+
+    @Override
+    public String hashBase64(String value) {
+        return new String(Base64.getEncoder().encode(hash(value)));
     }
 }

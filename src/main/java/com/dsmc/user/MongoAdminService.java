@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +77,6 @@ public class MongoAdminService implements AdminService {
         company.setStatus(Status.Unverified);
         Company newCompany = companyRepository.insert(company);
         sendVerificationEmail(newCompany);
-
         return newCompany;
     }
 
@@ -123,7 +121,7 @@ public class MongoAdminService implements AdminService {
     public User createCompanyUser(String companyId, User user) {
         Company company = companyRepository.findOne(companyId);
         user.setCompany(company);
-        user.setPassword(new String(Base64.getEncoder().encode(encryptionService.hash(user.getPassword()))));
+        user.setPassword(encryptionService.hashBase64(user.getPassword()));
         return userRepository.insert(user);
     }
 
@@ -135,7 +133,7 @@ public class MongoAdminService implements AdminService {
         }
         userUpdates.setId(userId);
         if (userUpdates.getPassword() != null) {
-            userUpdates.setPassword(new String(Base64.getEncoder().encode(encryptionService.hash(userUpdates.getPassword()))));
+            userUpdates.setPassword(encryptionService.hashBase64(userUpdates.getPassword()));
         }
         userRepository.save(userUpdates);
     }

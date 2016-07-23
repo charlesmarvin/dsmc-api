@@ -11,4 +11,6 @@ public interface EncryptionService {
     String decrypt(SecureValue secureValue);
 
     byte[] hash(String value);
+
+    String hashBase64(String value);
 }
