@@ -11,14 +11,14 @@ import org.springframework.util.ReflectionUtils;
  */
 public class CascadeSaveMongoEventListener extends AbstractMongoEventListener<Object> {
 
-    @Autowired
-    private MongoOperations mongoOperations;
+  @Autowired
+  private MongoOperations mongoOperations;
 
-    @Override
-    public void onBeforeConvert(BeforeConvertEvent<Object> source) {
-        ReflectionUtils.doWithFields(source.getClass(),
-                new CascadeCallback(source, mongoOperations));
-    }
+  @Override
+  public void onBeforeConvert(BeforeConvertEvent<Object> source) {
+    ReflectionUtils.doWithFields(source.getClass(),
+        new CascadeCallback(source, mongoOperations));
+  }
 
 
 }

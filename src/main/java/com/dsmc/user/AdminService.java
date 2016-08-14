@@ -6,25 +6,25 @@ import com.dsmc.user.domain.User;
 import java.util.List;
 
 public interface AdminService {
-    Company getCompanyById(String companyId);
+  Company getCompanyById(String companyId);
 
-    List<Company> getCompanies();
+  List<Company> getCompanies();
 
-    List<Company> getCompanies(Integer page, Integer pageSize);
+  List<Company> getCompanies(Integer page, Integer pageSize);
 
-    Company createCompany(Company company);
+  Company createCompany(Company company);
 
-    void updateCompany(Company company);
+  void updateCompany(Company company);
 
-    User getCompanyUser(String companyId, String userId);
+  User getCompanyUser(String companyId, String userId);
 
-    List<User> getCompanyUsers(String companyId);
+  List<User> getCompanyUsers(String companyId);
 
-    User createCompanyUser(String companyId, User user);
+  User createCompanyUser(String companyId, User user);
 
-    void updateCompanyUser(String companyId, String userId, User user);
+  void updateCompanyUser(String companyId, String userId, User user);
 
-    boolean resendCompanyAccountVerificationByEmail(String companyContactEmail);
+  boolean resendCompanyAccountVerificationByEmail(String companyContactEmail);
 
-    boolean verifyCompanyAccountByEmail(String companyContactEmail, String verificationCode);
+  boolean verifyCompanyAccountByEmail(String companyContactEmail, String verificationCode);
 }

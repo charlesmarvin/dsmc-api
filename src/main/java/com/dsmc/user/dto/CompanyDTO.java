@@ -2,44 +2,41 @@ package com.dsmc.user.dto;
 
 import com.dsmc.common.domain.Status;
 
-/**
- * Created by charlesmarvin on 7/9/16.
- */
 public class CompanyDTO {
-    private String id;
-    private String name;
-    private String email;
-    private Status status;
+  private String id;
+  private String name;
+  private Status status;
+  private UserDTO contact;
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public Status getStatus() {
-        return status;
-    }
+  public Status getStatus() {
+    return status;
+  }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+  public void setStatus(Status status) {
+    this.status = status;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public UserDTO getContact() {
+    return contact;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setContact(UserDTO contact) {
+    this.contact = contact;
+  }
 }

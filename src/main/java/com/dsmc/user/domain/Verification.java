@@ -8,60 +8,60 @@ import java.util.Date;
 
 @Document
 public class Verification {
-    @Id
-    private String id;
-    private String identifier;
-    private String verificationCode;
-    private int verificationAttempts;
-    @CreatedDate
-    private Date createdOn;
-    private String companyId;
+  @Id
+  private String id;
+  private String identifier;
+  private String verificationCode;
+  private int verificationAttempts;
+  @CreatedDate
+  private Date createdOn;
+  private String companyId;
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getIdentifier() {
-        return identifier;
-    }
+  public String getIdentifier() {
+    return identifier;
+  }
 
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-    }
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
 
-    public String getVerificationCode() {
-        return verificationCode;
-    }
+  public String getVerificationCode() {
+    return verificationCode;
+  }
 
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
-    }
+  public void setVerificationCode(String verificationCode) {
+    this.verificationCode = verificationCode;
+  }
 
-    public int getVerificationAttempts() {
-        return verificationAttempts;
-    }
+  public int getVerificationAttempts() {
+    return verificationAttempts;
+  }
 
-    public void setVerificationAttempts(int verificationAttempts) {
-        this.verificationAttempts = verificationAttempts;
-    }
+  public void setVerificationAttempts(int verificationAttempts) {
+    this.verificationAttempts = verificationAttempts;
+  }
 
-    public Date getCreatedOn() {
-        return createdOn;
-    }
+  public Date getCreatedOn() {
+    return createdOn;
+  }
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+  public void setCreatedOn(Date createdOn) {
+    this.createdOn = createdOn;
+  }
 
-    public String getCompanyId() {
-        return companyId;
-    }
+  public String getCompanyId() {
+    return companyId;
+  }
 
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
-    }
+  public void setCompanyId(String companyId) {
+    this.companyId = companyId;
+  }
 }

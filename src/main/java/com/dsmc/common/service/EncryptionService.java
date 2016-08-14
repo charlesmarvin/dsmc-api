@@ -4,13 +4,13 @@ import com.dsmc.common.domain.QueryableSecureValue;
 import com.dsmc.common.domain.SecureValue;
 
 public interface EncryptionService {
-    SecureValue encrypt(String value);
+  SecureValue encrypt(String value);
 
-    QueryableSecureValue encryptQueryable(String value);
+  QueryableSecureValue encryptQueryable(String value);
 
-    String decrypt(SecureValue secureValue);
+  String decrypt(SecureValue secureValue);
 
-    byte[] hash(String value);
+  byte[] hash(String value);
 
-    String hashBase64(String value);
+  String hashBase64(String value);
 }

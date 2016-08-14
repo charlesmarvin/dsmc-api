@@ -1,9 +1,11 @@
 package com.dsmc.user;
 
 import com.dsmc.user.domain.Company;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.Query;
 
 public interface CompanyRepository extends MongoRepository<Company, String> {
-    Company findByEmail(@Param("email") String email);
+  @Query(value = "{ 'company.email': ?0 }")
+  Company findByEmail(String email);
 }
