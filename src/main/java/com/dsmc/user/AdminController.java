@@ -54,6 +54,14 @@ public class AdminController {
     return new ResponseEntity<>(null, httpHeaders, HttpStatus.CREATED);
   }
 
+  @RequestMapping(method = RequestMethod.PUT, path = "/company/{companyId}")
+  public ResponseEntity<?> updateCompany(@RequestParam("companyId") String companyId,
+                                         @RequestBody CompanyDTO companyDTO) {
+    companyDTO.setId(companyId);
+    adminService.updateCompany(modelMapper.map(companyDTO, Company.class));
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+  }
+
   @RequestMapping(method = RequestMethod.POST, path = "/company/verify")
   public ResponseEntity<?> verifyCompany(@RequestBody CompanyVerificationDTO companyVerificationDTO) {
     boolean verified = adminService.verifyCompanyAccountByEmail(companyVerificationDTO.getIdentifier(),
@@ -113,8 +121,9 @@ public class AdminController {
   public ResponseEntity<?> updateCompanyUser(@PathVariable("companyId") String companyId,
                                              @PathVariable("userId") String userId,
                                              @RequestBody UserDTO newUser) {
-    adminService.updateCompanyUser(companyId, userId, modelMapper.map(newUser, User.class));
-    return new ResponseEntity<>(null, HttpStatus.OK);
+    newUser.setId(userId);
+    adminService.updateCompanyUser(companyId, modelMapper.map(newUser, User.class));
+    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
   }
 
 }

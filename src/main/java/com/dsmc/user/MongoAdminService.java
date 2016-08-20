@@ -111,7 +111,17 @@ public class MongoAdminService implements AdminService {
 
   @Override
   public void updateCompany(Company company) {
-    companyRepository.save(company);
+    Company companyFromDb = companyRepository.findOne(company.getId());
+    if (companyFromDb == null) {
+      return;
+    }
+    if (company.getName() != null) {
+      companyFromDb.setName(company.getName());
+    }
+    if (company.getStatus() != null) {
+      companyFromDb.setStatus(company.getStatus());
+    }
+    companyRepository.save(companyFromDb);
   }
 
   @Override
@@ -133,9 +143,9 @@ public class MongoAdminService implements AdminService {
   }
 
   @Override
-  public void updateCompanyUser(String companyId, String userId, User userUpdates) {
-    User user = userRepository.findOne(userId);
-    if (user.getCompany() == null || !companyId.equals(user.getCompany().getId())) {
+  public void updateCompanyUser(String companyId, User userUpdates) {
+    User user = userRepository.findOne(userUpdates.getId());
+    if (user == null || user.getCompany() == null || !companyId.equals(user.getCompany().getId())) {
       throw new RuntimeException("Illegal attempt to update user"); //TODO make exception class
     }
     if (userUpdates.getFirstName() != null) {
