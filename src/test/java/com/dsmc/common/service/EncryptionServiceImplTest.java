@@ -2,6 +2,9 @@ package com.dsmc.common.service;
 
 import com.dsmc.common.domain.QueryableSecureValue;
 import com.dsmc.common.domain.SecureValue;
+import com.dsmc.common.service.encryption.EncryptionService;
+import com.dsmc.common.service.encryption.EncryptionServiceImpl;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
