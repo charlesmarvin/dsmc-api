@@ -18,7 +18,7 @@
 			}
 			.message {
 			}
-			.verification-cta {
+			.oneTimePasscode-cta {
 				text-align: center;
 			}
     </style>
@@ -44,9 +44,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="verification-cta">
+                        <td class="oneTimePasscode-cta">
 													<p>
-														Account verification code <br/>
+														Account oneTimePasscode code <br/>
 														<b>$code</b>
 													</p>
                         </td>

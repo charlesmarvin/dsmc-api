@@ -1,7 +1,8 @@
 spring.profiles.active: dev
 management.add-application-context-header: false
 server.server-header: unspecified
-app.verification-code.length: 6
+app.passcode.length: 6
+app.passcode.emailTemplateId: onboarding-company-account-verification
 
 spring.data.mongodb.database: ${spring.data.mongodb.database}
 spring.data.mongodb.uri: ${spring.data.mongodb.uri}

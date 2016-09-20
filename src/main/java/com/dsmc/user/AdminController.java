@@ -1,6 +1,6 @@
 package com.dsmc.user;
 
-import com.dsmc.common.service.EncryptionService;
+import com.dsmc.common.service.encryption.EncryptionService;
 import com.dsmc.user.domain.Company;
 import com.dsmc.user.domain.User;
 import com.dsmc.user.dto.CompanyDTO;

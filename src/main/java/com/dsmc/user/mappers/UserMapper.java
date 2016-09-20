@@ -1,6 +1,6 @@
 package com.dsmc.user.mappers;
 
-import com.dsmc.common.service.QueryableSecureValueToStringConverter;
+import com.dsmc.common.service.encryption.QueryableSecureValueToStringConverter;
 import com.dsmc.user.domain.User;
 import com.dsmc.user.dto.UserDTO;
 

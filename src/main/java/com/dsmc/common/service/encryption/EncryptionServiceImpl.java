@@ -1,4 +1,4 @@
-package com.dsmc.common.service;
+package com.dsmc.common.service.encryption;
 
 import com.dsmc.common.domain.QueryableSecureValue;
 import com.dsmc.common.domain.SecureValue;
@@ -20,7 +20,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Service
 public class EncryptionServiceImpl implements EncryptionService {
-  private final SecretKeySpec secretKeySpec;
   private final String salt;
   private final Cipher encryptionCipher;
   private final Cipher decryptionCipher;
@@ -34,7 +33,7 @@ public class EncryptionServiceImpl implements EncryptionService {
     this.salt = salt;
     try {
       Security.addProvider(new BouncyCastleProvider());
-      secretKeySpec = new SecretKeySpec(key.getBytes(), algo);
+      SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), algo);
       encryptionCipher = Cipher.getInstance(algo);
       encryptionCipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
 

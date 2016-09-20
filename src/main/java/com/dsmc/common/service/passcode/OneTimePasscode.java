@@ -1,4 +1,4 @@
-package com.dsmc.user.domain;
+package com.dsmc.common.service.passcode;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -7,15 +7,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
 @Document
-public class Verification {
+public class OneTimePasscode {
   @Id
   private String id;
   private String identifier;
-  private String verificationCode;
-  private int verificationAttempts;
+  private String passcode;
   @CreatedDate
   private Date createdOn;
-  private String companyId;
 
   public String getId() {
     return id;
@@ -33,20 +31,12 @@ public class Verification {
     this.identifier = identifier;
   }
 
-  public String getVerificationCode() {
-    return verificationCode;
+  public String getPasscode() {
+    return passcode;
   }
 
-  public void setVerificationCode(String verificationCode) {
-    this.verificationCode = verificationCode;
-  }
-
-  public int getVerificationAttempts() {
-    return verificationAttempts;
-  }
-
-  public void setVerificationAttempts(int verificationAttempts) {
-    this.verificationAttempts = verificationAttempts;
+  public void setPasscode(String passcode) {
+    this.passcode = passcode;
   }
 
   public Date getCreatedOn() {
@@ -55,13 +45,5 @@ public class Verification {
 
   public void setCreatedOn(Date createdOn) {
     this.createdOn = createdOn;
-  }
-
-  public String getCompanyId() {
-    return companyId;
-  }
-
-  public void setCompanyId(String companyId) {
-    this.companyId = companyId;
   }
 }

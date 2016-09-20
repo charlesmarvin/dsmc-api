@@ -1,4 +1,4 @@
-package com.dsmc.common.service;
+package com.dsmc.common.service.encryption;
 
 import com.dsmc.common.domain.QueryableSecureValue;
 
