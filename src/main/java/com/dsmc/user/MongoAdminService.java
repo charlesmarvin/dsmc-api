@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,17 +22,20 @@ public class MongoAdminService implements AdminService {
   private final CompanyRepository companyRepository;
   private final UserRepository userRepository;
   private final PasscodeService passcodeService;
+  private final PasswordEncoder passwordEncoder;
   private final EncryptionService encryptionService;
 
   @Autowired
   public MongoAdminService(CompanyRepository companyRepository,
                            UserRepository userRepository,
                            EncryptionService encryptionService,
-                           PasscodeService passcodeService) {
+                           PasscodeService passcodeService,
+                           PasswordEncoder passwordEncoder) {
     this.companyRepository = companyRepository;
     this.userRepository = userRepository;
     this.encryptionService = encryptionService;
     this.passcodeService = passcodeService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
@@ -104,7 +108,7 @@ public class MongoAdminService implements AdminService {
   public User createCompanyUser(String companyId, User user) {
     Company company = companyRepository.findOne(companyId);
     user.setCompany(company);
-    user.setPassword(encryptionService.hashBase64(user.getPassword()));
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
     return userRepository.insert(user);
   }
 
@@ -130,7 +134,7 @@ public class MongoAdminService implements AdminService {
       user.setUsername(userUpdates.getUsername());
     }
     if (userUpdates.getPassword() != null) {
-      user.setPassword(encryptionService.hashBase64(userUpdates.getPassword()));
+      user.setPassword(passwordEncoder.encode(userUpdates.getPassword()));
     }
     userRepository.save(user);
   }

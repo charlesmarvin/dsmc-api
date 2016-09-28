@@ -16,8 +16,10 @@ apply plugin: 'spring-boot'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-repositories {
-    mavenCentral()
+configurations {
+    cucumberRuntime {
+        extendsFrom testRuntime
+    }
 }
 
 dependencies {
@@ -38,10 +40,15 @@ dependencies {
     compile('org.apache.httpcomponents:httpclient:4.5.2')
     compile('org.apache.velocity:velocity:1.7')
     compile('org.apache.velocity:velocity-tools:2.0')
+    compile('io.jsonwebtoken:jjwt:0.6.0')
 
 
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile('junit:junit')
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'info.cukes:cucumber-java:1.2.4'
+    testCompile 'info.cukes:cucumber-spring:1.2.4'
+    testCompile 'info.cukes:cucumber-junit:1.2.4'
+    testCompile 'io.rest-assured:rest-assured:3.0.1'
+    testCompile 'junit:junit:4.11'
 }
 
 jar {
@@ -49,6 +56,26 @@ jar {
     version = "SNAPSHOT"
 }
 
+repositories {
+    mavenCentral()
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
+}
+
+task cucumber() {
+    dependsOn assemble, compileTestJava
+    doLast {
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', 'src/test/resources']
+        }
+    }
+}
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
 }
