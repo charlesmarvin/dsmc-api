@@ -1,9 +1,6 @@
-package com.dsmc.config;
+package com.dsmc.auth;
 
-import com.dsmc.auth.AuthenticationClaimTokenMapper;
-import com.dsmc.auth.StatelessAuthenticationFilter;
-import com.dsmc.auth.StatelessLoginFilter;
-import com.dsmc.auth.StatelessTokenService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +24,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   private StatelessTokenService statelessTokenService;
   @Autowired
   private AuthenticationClaimTokenMapper authenticationClaimTokenMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -39,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .anyRequest()
         .authenticated()
         .and()
-        .addFilterBefore(new StatelessLoginFilter("/api/v1/auth/token", authenticationManager(), statelessTokenService),
+        .addFilterBefore(new StatelessLoginFilter("/api/v1/auth/token", authenticationManager(), statelessTokenService, objectMapper),
             UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(new StatelessAuthenticationFilter(statelessTokenService, authenticationClaimTokenMapper),
             UsernamePasswordAuthenticationFilter.class)

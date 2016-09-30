@@ -22,21 +22,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
-  private static ObjectMapper MAPPER = new ObjectMapper();
+class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
+  private final ObjectMapper objectMapper;
   private StatelessTokenService statelessTokenService;
 
-  public StatelessLoginFilter(String url,
-                              AuthenticationManager authenticationManager,
-                              StatelessTokenService statelessTokenService) {
+  StatelessLoginFilter(String url,
+                       AuthenticationManager authenticationManager,
+                       StatelessTokenService statelessTokenService,
+                       ObjectMapper objectMapper) {
     super(new AntPathRequestMatcher(url));
     this.statelessTokenService = statelessTokenService;
+    this.objectMapper = objectMapper;
     setAuthenticationManager(authenticationManager);
   }
 
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-    ClientCredentials credentials = MAPPER.readValue(request.getInputStream(), ClientCredentials.class);
+    ClientCredentials credentials = objectMapper.readValue(request.getInputStream(), ClientCredentials.class);
     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.clientId, credentials.clientSecret);
     return getAuthenticationManager().authenticate(token);
   }

@@ -14,12 +14,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 
-public class StatelessAuthenticationFilter extends GenericFilterBean {
+class StatelessAuthenticationFilter extends GenericFilterBean {
   private final StatelessTokenService statelessTokenService;
   private final AuthenticationClaimTokenMapper authenticationClaimTokenMapper;
 
-  public StatelessAuthenticationFilter(StatelessTokenService statelessTokenService,
-                                       AuthenticationClaimTokenMapper authenticationClaimTokenMapper) {
+  StatelessAuthenticationFilter(StatelessTokenService statelessTokenService,
+                                AuthenticationClaimTokenMapper authenticationClaimTokenMapper) {
     this.statelessTokenService = statelessTokenService;
     this.authenticationClaimTokenMapper = authenticationClaimTokenMapper;
   }

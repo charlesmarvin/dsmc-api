@@ -1,6 +1,8 @@
 package com.dsmc.user;
 
 import com.dsmc.common.domain.Status;
+import com.dsmc.common.event.EventCatalogue;
+import com.dsmc.common.event.Publisher;
 import com.dsmc.common.service.encryption.EncryptionService;
 import com.dsmc.common.service.passcode.PasscodeService;
 import com.dsmc.user.domain.Company;
@@ -23,6 +25,7 @@ public class MongoAdminService implements AdminService {
   private final UserRepository userRepository;
   private final PasscodeService passcodeService;
   private final PasswordEncoder passwordEncoder;
+  private final Publisher publisher;
   private final EncryptionService encryptionService;
 
   @Autowired
@@ -30,12 +33,14 @@ public class MongoAdminService implements AdminService {
                            UserRepository userRepository,
                            EncryptionService encryptionService,
                            PasscodeService passcodeService,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           Publisher publisher) {
     this.companyRepository = companyRepository;
     this.userRepository = userRepository;
     this.encryptionService = encryptionService;
     this.passcodeService = passcodeService;
     this.passwordEncoder = passwordEncoder;
+    this.publisher = publisher;
   }
 
   @Override
@@ -66,12 +71,15 @@ public class MongoAdminService implements AdminService {
     //TODO mc - find a better way to model bidirectional relationship
     company.setVerified(false);
     company.setStatus(Status.Unverified);
-    User newUser = userRepository.save(company.getContact());
+    User newUser = company.getContact();
+    newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+    newUser = userRepository.save(newUser);
     company.setContact(newUser);
     Company newCompany = companyRepository.insert(company);
     newUser.setCompany(newCompany);
     userRepository.save(newUser);
     sendVerificationEmail(newCompany);
+    publisher.publish(EventCatalogue.USER_CREATED, newUser);
     return newCompany;
   }
 
@@ -137,6 +145,7 @@ public class MongoAdminService implements AdminService {
       user.setPassword(passwordEncoder.encode(userUpdates.getPassword()));
     }
     userRepository.save(user);
+    publisher.publish(EventCatalogue.USER_UPDATED, user);
   }
 
   @Override

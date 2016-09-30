@@ -17,7 +17,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
-public class StatelessTokenService {
+class StatelessTokenService {
   private final static Logger LOG = LoggerFactory.getLogger(StatelessTokenService.class);
   private final String secret;
 
@@ -26,7 +26,7 @@ public class StatelessTokenService {
     this.secret = secret;
   }
 
-  public String buildToken(Map<String, Object> claims) {
+  String buildToken(Map<String, Object> claims) {
     LocalDateTime exp = LocalDateTime.now(ZoneId.of("Z")).plus(1, ChronoUnit.DAYS);
     return Jwts.builder()
         .setClaims(claims)
@@ -35,7 +35,7 @@ public class StatelessTokenService {
         .compact();
   }
 
-  public Map<String, Object> parseToken(String token) {
+  Map<String, Object> parseToken(String token) {
     try {
       return Jwts.parser()
           .setSigningKey(secret)

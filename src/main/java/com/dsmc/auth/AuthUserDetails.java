@@ -1,7 +1,6 @@
 package com.dsmc.auth;
 
 import com.dsmc.common.domain.Status;
-import com.dsmc.user.domain.User;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 class AuthUserDetails implements UserDetails {
-  private final User user;
+  private final Identity user;
 
-  AuthUserDetails(User user) {
+  AuthUserDetails(Identity user) {
     if (user == null) {
       throw new IllegalArgumentException("User cannot be null");
     }
