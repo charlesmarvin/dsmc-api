@@ -1,20 +1,17 @@
 package com.dsmc.auth;
 
-import com.dsmc.common.domain.Status;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Objects;
 
 class AuthUserDetails implements UserDetails {
-  private final Identity user;
+  private final Identity identity;
 
   AuthUserDetails(Identity user) {
-    if (user == null) {
-      throw new IllegalArgumentException("User cannot be null");
-    }
-    this.user = user;
+    Objects.requireNonNull(user);
+    this.identity = user;
   }
 
   @Override
@@ -24,12 +21,12 @@ class AuthUserDetails implements UserDetails {
 
   @Override
   public String getPassword() {
-    return user.getPassword();
+    return identity.getPassword();
   }
 
   @Override
   public String getUsername() {
-    return user.getUsername();
+    return identity.getUsername();
   }
 
   @Override
@@ -39,7 +36,7 @@ class AuthUserDetails implements UserDetails {
 
   @Override
   public boolean isAccountNonLocked() {
-    return user.getStatus() != Status.Locked;
+    return true;
   }
 
   @Override
@@ -49,6 +46,10 @@ class AuthUserDetails implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return user.getStatus() == Status.Active;
+    return true;
+  }
+
+  public String getCompanyId() {
+    return identity.getCompanyId();
   }
 }

@@ -13,35 +13,45 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.servlet.Filter;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+  private static final String TOKEN_API_ENDPOINT = "/api/v1/auth/token";
   @Autowired
-  UserDetailsService userDetailsService;
+  private UserDetailsService userDetailsService;
   @Autowired
-  PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder;
   @Autowired
   private StatelessTokenService statelessTokenService;
   @Autowired
   private AuthenticationClaimTokenMapper authenticationClaimTokenMapper;
   @Autowired
   private ObjectMapper objectMapper;
+  @Autowired
+  private IdentityService identityService;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+    Filter loginFilter = new StatelessLoginFilter(TOKEN_API_ENDPOINT,
+        authenticationManager(),
+        statelessTokenService,
+        authenticationClaimTokenMapper,
+        identityService,
+        objectMapper);
+    StatelessAuthenticationFilter authFilter = new StatelessAuthenticationFilter(statelessTokenService, authenticationClaimTokenMapper);
     http.csrf()
         .disable()
         .antMatcher("/api/**")
         .authorizeRequests()
-        .antMatchers("/api/v1/auth/token")
+        .antMatchers(TOKEN_API_ENDPOINT)
         .permitAll()
         .anyRequest()
         .authenticated()
         .and()
-        .addFilterBefore(new StatelessLoginFilter("/api/v1/auth/token", authenticationManager(), statelessTokenService, objectMapper),
-            UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(new StatelessAuthenticationFilter(statelessTokenService, authenticationClaimTokenMapper),
-            UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
   }
@@ -50,12 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(userDetailsService)
-        .passwordEncoder(passwordEncoder)
-        .and()
-        .inMemoryAuthentication()
-        .withUser("user")
-        .password("password")
-        .roles("USER");
+        .passwordEncoder(passwordEncoder);
   }
 
 }

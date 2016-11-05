@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.FilterChain;
@@ -23,21 +22,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
+  private final StatelessTokenService statelessTokenService;
+  private final AuthenticationClaimTokenMapper authenticationClaimTokenMapper;
+  private final IdentityService identityService;
   private final ObjectMapper objectMapper;
-  private StatelessTokenService statelessTokenService;
 
   StatelessLoginFilter(String url,
                        AuthenticationManager authenticationManager,
                        StatelessTokenService statelessTokenService,
+                       AuthenticationClaimTokenMapper authenticationClaimTokenMapper,
+                       IdentityService identityService,
                        ObjectMapper objectMapper) {
     super(new AntPathRequestMatcher(url));
     this.statelessTokenService = statelessTokenService;
+    this.authenticationClaimTokenMapper = authenticationClaimTokenMapper;
+    this.identityService = identityService;
     this.objectMapper = objectMapper;
     setAuthenticationManager(authenticationManager);
   }
 
   @Override
-  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+      throws AuthenticationException, IOException, ServletException {
     ClientCredentials credentials = objectMapper.readValue(request.getInputStream(), ClientCredentials.class);
     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.clientId, credentials.clientSecret);
     return getAuthenticationManager().authenticate(token);
@@ -49,11 +55,12 @@ class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
                                           FilterChain chain,
                                           Authentication authentication)
       throws IOException, ServletException {
-    String name = authentication.getName();
-    Map<String, Object> claims = new HashMap<>();
-    claims.put("sub", name);
-    String token = statelessTokenService.buildToken(claims);
-    response.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
+    identityService.findByUsername(authentication.getName())
+        .ifPresent(identity -> {
+          Map<String, Object> claims = authenticationClaimTokenMapper.fromIdentity(identity);
+          String token = statelessTokenService.buildToken(claims);
+          response.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
+        });
   }
 
 

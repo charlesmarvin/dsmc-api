@@ -1,6 +1,7 @@
 package com.dsmc.auth;
 
 import com.dsmc.common.domain.Status;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import org.springframework.data.annotation.Id;
 
@@ -9,11 +10,15 @@ import java.time.LocalDateTime;
 public class Identity {
   @Id
   private String id;
+  @JsonView(View.Principal.class)
   private String identifier;
+  @JsonView(View.Principal.class)
   private String username;
   private String password;
   private Status status;
   private LocalDateTime createdOn;
+  @JsonView(View.Principal.class)
+  private String companyId;
 
   public String getId() {
     return id;
@@ -61,5 +66,18 @@ public class Identity {
 
   public void setCreatedOn(LocalDateTime createdOn) {
     this.createdOn = createdOn;
+  }
+
+  public String getCompanyId() {
+    return companyId;
+  }
+
+  public void setCompanyId(String companyId) {
+    this.companyId = companyId;
+  }
+
+  public static class View {
+    public static class Principal {
+    }
   }
 }

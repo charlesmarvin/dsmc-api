@@ -6,11 +6,11 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 class AuthenticatedUser implements Authentication {
-  private final String username;
+  private final AuthUserDetails details;
   private boolean authenticated = true;
 
-  public AuthenticatedUser(String username) {
-    this.username = username;
+  AuthenticatedUser(Identity identity) {
+    details = new AuthUserDetails(identity);
   }
 
   @Override
@@ -25,7 +25,7 @@ class AuthenticatedUser implements Authentication {
 
   @Override
   public Object getDetails() {
-    return null;
+    return details;
   }
 
   @Override
@@ -45,6 +45,6 @@ class AuthenticatedUser implements Authentication {
 
   @Override
   public String getName() {
-    return username;
+    return details.getUsername();
   }
 }

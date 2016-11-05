@@ -5,6 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class DefaultIdentityService implements IdentityService {
 
@@ -25,8 +27,13 @@ public class DefaultIdentityService implements IdentityService {
   }
 
   @Override
-  public Identity findByIdentifier(String identifier) {
-    return identityRepository.findByIdentifier(identifier);
+  public Optional<Identity> findByIdentifier(String identifier) {
+    return Optional.ofNullable(identityRepository.findByIdentifier(identifier));
+  }
+
+  @Override
+  public Optional<Identity> findByUsername(String username) {
+    return Optional.ofNullable(identityRepository.findByUsername(username));
   }
 
   @Override

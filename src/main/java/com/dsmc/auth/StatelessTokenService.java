@@ -11,6 +11,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -19,6 +20,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 class StatelessTokenService {
   private final static Logger LOG = LoggerFactory.getLogger(StatelessTokenService.class);
+  private final static String TOKEN_PREFIX = "Bearer ";
   private final String secret;
 
   @Autowired
@@ -35,15 +37,23 @@ class StatelessTokenService {
         .compact();
   }
 
-  Map<String, Object> parseToken(String token) {
+  Optional<Map<String, Object>> parseToken(String token) {
     try {
-      return Jwts.parser()
+      if (token == null) {
+        return Optional.empty();
+      }
+
+      if (token.startsWith(TOKEN_PREFIX)) {
+        token = token.substring(TOKEN_PREFIX.length());
+      }
+
+      return Optional.of(Jwts.parser()
           .setSigningKey(secret)
           .parseClaimsJws(token)
-          .getBody();
+          .getBody());
     } catch (JwtException e) {
       LOG.warn("Error parsing token", e);
     }
-    return null;
+    return Optional.empty();
   }
 }
