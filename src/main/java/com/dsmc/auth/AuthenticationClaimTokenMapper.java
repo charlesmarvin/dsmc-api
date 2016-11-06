@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 @Service
@@ -29,16 +31,14 @@ class AuthenticationClaimTokenMapper {
     } catch (IOException e) {
       return null;
     }
-    return new AuthenticatedUser(identity);
+    return new UsernamePasswordAuthenticationToken(identity.getUsername(), identity.getPassword(), Collections.EMPTY_LIST);
   }
 
   Map<String, Object> fromIdentity(Identity identity) {
     try {
       String json = objectMapper.writerWithView(Identity.View.Principal.class)
           .writeValueAsString(identity);
-      Map<String, Object> claims = objectMapper.readValue(json, type);
-      claims.remove("password"); //TODO Create JsonView for serialization
-      return claims;
+      return objectMapper.readValue(json, type);
     } catch (IOException e) {
       return null;
     }
