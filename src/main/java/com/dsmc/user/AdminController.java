@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @ResponseBody
-@RequestMapping("api/v1/admin")
+@RequestMapping("api/admin")
 @SuppressWarnings("unused")
 public class AdminController {
 
@@ -50,7 +50,7 @@ public class AdminController {
     return new ResponseEntity<>(null, httpHeaders, HttpStatus.CREATED);
   }
 
-  @RequestMapping(method = RequestMethod.PUT, path = "/company/{companyId}")
+  @RequestMapping(method = RequestMethod.PUT, path = "/companies/{companyId}")
   public ResponseEntity<?> updateCompany(@RequestParam("companyId") String companyId,
                                          @RequestBody CompanyDTO companyDTO) {
     companyDTO.setId(companyId);

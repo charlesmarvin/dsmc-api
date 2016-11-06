@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @ResponseBody
-@RequestMapping("api/v1")
+@RequestMapping("api/")
 @SuppressWarnings("unused")
 public class CompanyController {
 
