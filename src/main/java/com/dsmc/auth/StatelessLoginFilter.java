@@ -2,6 +2,7 @@ package com.dsmc.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -22,20 +23,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
+  private final TypeReference<Map<String, Object>> GENERIC_CLAIM_TYPE = new TypeReference<Map<String, Object>>() {
+  };
+
   private final StatelessTokenService statelessTokenService;
-  private final AuthenticationClaimTokenMapper authenticationClaimTokenMapper;
   private final IdentityService identityService;
   private final ObjectMapper objectMapper;
 
   StatelessLoginFilter(String url,
                        AuthenticationManager authenticationManager,
                        StatelessTokenService statelessTokenService,
-                       AuthenticationClaimTokenMapper authenticationClaimTokenMapper,
                        IdentityService identityService,
                        ObjectMapper objectMapper) {
     super(new AntPathRequestMatcher(url));
     this.statelessTokenService = statelessTokenService;
-    this.authenticationClaimTokenMapper = authenticationClaimTokenMapper;
     this.identityService = identityService;
     this.objectMapper = objectMapper;
     setAuthenticationManager(authenticationManager);
@@ -44,7 +45,7 @@ class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
       throws AuthenticationException, IOException, ServletException {
-    ClientCredentials credentials = objectMapper.readValue(request.getInputStream(), ClientCredentials.class);
+    TokenRequest credentials = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.clientId, credentials.clientSecret);
     return getAuthenticationManager().authenticate(token);
   }
@@ -57,20 +58,29 @@ class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
       throws IOException, ServletException {
     identityService.findByUsername(authentication.getName())
         .ifPresent(identity -> {
-          Map<String, Object> claims = authenticationClaimTokenMapper.fromIdentity(identity);
+          Map<String, Object> claims = getClaimsFromIdentity(identity);
           String token = statelessTokenService.buildToken(claims);
           response.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
         });
   }
 
+  private Map<String, Object> getClaimsFromIdentity(Identity identity) {
+    try {
+      String json = objectMapper.writerWithView(Identity.View.Principal.class)
+          .writeValueAsString(identity);
+      return objectMapper.readValue(json, GENERIC_CLAIM_TYPE);
+    } catch (IOException e) {
+      return null;
+    }
+  }
 
-  private final static class ClientCredentials {
+  private final static class TokenRequest {
     final String clientId;
     final String clientSecret;
 
     @JsonCreator
-    public ClientCredentials(@NotBlank @JsonProperty("clientId") String clientId,
-                             @NotBlank @JsonProperty("clientSecret") String clientSecret) {
+    public TokenRequest(@NotBlank @JsonProperty("clientId") String clientId,
+                        @NotBlank @JsonProperty("clientSecret") String clientSecret) {
       this.clientId = clientId;
       this.clientSecret = clientSecret;
     }

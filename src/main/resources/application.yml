@@ -14,3 +14,7 @@ app.security.encryption.algo: ${app.security.encryption.algo}
 app.mailgun.clientId: ${app.mailgun.clientId}
 app.mailgun.apikey: ${app.mailgun.apikey}
 app.mailgun.endpoint: ${app.mailgun.endpoint}
+
+app.security.admin.username: ${app.security.admin.username}
+app.security.admin.password: ${app.security.admin.password}
+app.security.admin.role: ${app.security.admin.role}
