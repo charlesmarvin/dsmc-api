@@ -1,7 +1,6 @@
 package com.dsmc.auth;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -43,6 +42,6 @@ class StatelessAuthenticationFilter extends GenericFilterBean {
     if (claims.containsKey("roles")) {
       grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(claims.get("roles").toString());
     }
-    return new UsernamePasswordAuthenticationToken(claims.get("username"), null, grantedAuthorities);
+    return new MultiTenantAuthenticationToken(claims.get("username"), null, grantedAuthorities, claims.get("identifier"), claims.get("companyId"));
   }
 }
