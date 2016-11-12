@@ -2,11 +2,9 @@ package com.dsmc.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,27 +18,23 @@ import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
-  private final TypeReference<Map<String, Object>> GENERIC_CLAIM_TYPE = new TypeReference<Map<String, Object>>() {
-  };
 
   private final StatelessTokenService statelessTokenService;
-  private final IdentityService identityService;
   private final ObjectMapper objectMapper;
 
   StatelessLoginFilter(String url,
                        AuthenticationManager authenticationManager,
                        StatelessTokenService statelessTokenService,
-                       IdentityService identityService,
                        ObjectMapper objectMapper) {
     super(new AntPathRequestMatcher(url));
-    this.statelessTokenService = statelessTokenService;
-    this.identityService = identityService;
-    this.objectMapper = objectMapper;
     setAuthenticationManager(authenticationManager);
+    this.statelessTokenService = statelessTokenService;
+    this.objectMapper = objectMapper;
   }
 
   @Override
@@ -65,18 +59,15 @@ class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
       claims.put("identifier", user.getIdentifier());
       claims.put("tenantId", user.getTenantId());
       String token = statelessTokenService.buildToken(claims);
-      response.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
+      response.addCookie(createAccessTokenCookie(token));
     }
   }
 
-  private Map<String, Object> getClaimsFromIdentity(Identity identity) {
-    try {
-      String json = objectMapper.writerWithView(Identity.View.Principal.class)
-          .writeValueAsString(identity);
-      return objectMapper.readValue(json, GENERIC_CLAIM_TYPE);
-    } catch (IOException e) {
-      return null;
-    }
+  protected Cookie createAccessTokenCookie(String token) {
+    Cookie cookie = new Cookie("access_token", token);
+    cookie.setHttpOnly(true);
+    cookie.setSecure(true);
+    return cookie;
   }
 
   private final static class TokenRequest {

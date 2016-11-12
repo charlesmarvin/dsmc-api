@@ -27,10 +27,11 @@ import reactor.Environment;
 import reactor.bus.EventBus;
 
 @Configuration
+@SuppressWarnings("unused")
 public class SpringConfig {
 
   @Autowired
-  MongoDbFactory mongoDbFactory;
+  private MongoDbFactory mongoDbFactory;
 
   @Bean
   public ModelMapper modelMapper(List<PropertyMap> propertyMaps, List<AbstractConverter> converters) {
@@ -80,7 +81,7 @@ public class SpringConfig {
   }
 
   @Bean
-  public MappingMongoConverter getDefaultMongoConverter() throws Exception {
+  MappingMongoConverter getDefaultMongoConverter() throws Exception {
     return new MappingMongoConverter(
         new DefaultDbRefResolver(mongoDbFactory), new MongoMappingContext());
   }

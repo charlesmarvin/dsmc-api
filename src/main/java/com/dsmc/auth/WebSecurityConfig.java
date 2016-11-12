@@ -43,7 +43,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     Filter loginFilter = new StatelessLoginFilter("/api/auth/token",
         authenticationManager(),
         statelessTokenService,
-        identityService,
         objectMapper);
 
     AdminStatelessLoginFilter adminLoginFilter = new AdminStatelessLoginFilter("/api/admin/auth/token",

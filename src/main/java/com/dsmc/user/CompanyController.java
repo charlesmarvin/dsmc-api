@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Controller
 @ResponseBody
 @RequestMapping("api/")
-@PreAuthorize("#companyId == authentication.tenantId")
+@PreAuthorize("#companyId == authentication.tenantId or hasRole('ROLE_ADMIN')")
 @SuppressWarnings("unused")
 public class CompanyController {
 
@@ -83,7 +83,6 @@ public class CompanyController {
   @RequestMapping(method = RequestMethod.GET, path = "/companies/{companyId}/users/{userId}")
   public UserDTO getCompanyUser(@PathVariable("companyId") String companyId,
                                 @PathVariable("userId") String userId) {
-
     return modelMapper.map(adminService.getCompanyUser(companyId, userId), UserDTO.class);
   }
 

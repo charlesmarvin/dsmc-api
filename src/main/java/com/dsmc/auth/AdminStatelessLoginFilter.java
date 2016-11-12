@@ -2,7 +2,6 @@ package com.dsmc.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +23,7 @@ class AdminStatelessLoginFilter extends StatelessLoginFilter {
                             AuthenticationManager authenticationManager,
                             StatelessTokenService statelessTokenService,
                             ObjectMapper objectMapper) {
-    super(url, authenticationManager, null, null, objectMapper);
+    super(url, authenticationManager, null, objectMapper);
     this.statelessTokenService = statelessTokenService;
   }
 
@@ -39,7 +38,7 @@ class AdminStatelessLoginFilter extends StatelessLoginFilter {
     claims.put("username", authentication.getName());
     claims.put("roles", roles);
     String token = statelessTokenService.buildToken(claims);
-    response.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
+    response.addCookie(createAccessTokenCookie(token));
   }
 
   private String getRolesFromAuthentication(Authentication authentication) {
