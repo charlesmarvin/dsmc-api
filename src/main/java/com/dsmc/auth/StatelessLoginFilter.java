@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.FilterChain;
@@ -56,12 +57,16 @@ class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
                                           FilterChain chain,
                                           Authentication authentication)
       throws IOException, ServletException {
-    identityService.findByUsername(authentication.getName())
-        .ifPresent(identity -> {
-          Map<String, Object> claims = getClaimsFromIdentity(identity);
-          String token = statelessTokenService.buildToken(claims);
-          response.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
-        });
+    Object principal = authentication.getPrincipal();
+    if (principal != null && principal instanceof MultiTenantUser) {
+      MultiTenantUser user = (MultiTenantUser) principal;
+      Map<String, Object> claims = new HashMap<>();
+      claims.put("username", user.getUsername());
+      claims.put("identifier", user.getIdentifier());
+      claims.put("tenantId", user.getTenantId());
+      String token = statelessTokenService.buildToken(claims);
+      response.addHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", token));
+    }
   }
 
   private Map<String, Object> getClaimsFromIdentity(Identity identity) {

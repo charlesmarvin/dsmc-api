@@ -42,6 +42,6 @@ class StatelessAuthenticationFilter extends GenericFilterBean {
     if (claims.containsKey("roles")) {
       grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(claims.get("roles").toString());
     }
-    return new MultiTenantAuthenticationToken(claims.get("username"), null, grantedAuthorities, claims.get("identifier"), claims.get("companyId"));
+    return new MultiTenantAuthenticationToken(claims.get("username"), null, grantedAuthorities, claims.get("identifier"), claims.get("tenantId"));
   }
 }

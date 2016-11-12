@@ -1,6 +1,7 @@
 package com.dsmc.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,11 @@ public class DefaultIdentityService implements IdentityService {
     if (user == null) {
       throw new UsernameNotFoundException("Unknown User");
     }
-    return new AuthUserDetails(user);
+    return new MultiTenantUser(user.getUsername(),
+        user.getPassword(),
+        AuthorityUtils.NO_AUTHORITIES,
+        user.getIdentifier(),
+        user.getCompanyId());
   }
 
   @Override
