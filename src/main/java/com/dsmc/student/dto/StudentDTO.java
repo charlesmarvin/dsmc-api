@@ -1,17 +1,15 @@
-package com.dsmc.student;
+package com.dsmc.student.dto;
 
 import com.dsmc.common.domain.Address;
 import com.dsmc.common.domain.Status;
 
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Student {
-  @Id
+import io.swagger.annotations.ApiModel;
+
+@ApiModel
+public class StudentDTO {
   private String id;
   private String firstName;
   private String lastName;
@@ -23,10 +21,7 @@ public class Student {
   private Address address;
   private String companyId;
   private Status status;
-  @CreatedDate
   private LocalDateTime createdOn;
-  @CreatedBy
-  private String createdBy;
 
   public String getId() {
     return id;
@@ -122,13 +117,5 @@ public class Student {
 
   public void setCreatedOn(LocalDateTime createdOn) {
     this.createdOn = createdOn;
-  }
-
-  public String getCreatedBy() {
-    return createdBy;
-  }
-
-  public void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
   }
 }
