@@ -5,12 +5,12 @@ import com.dsmc.common.event.EventCatalogue;
 import com.dsmc.common.event.Publisher;
 import com.dsmc.common.service.encryption.EncryptionService;
 import com.dsmc.common.service.passcode.PasscodeService;
+import com.dsmc.common.util.PageableHelper;
 import com.dsmc.user.domain.Company;
 import com.dsmc.user.domain.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,8 +19,6 @@ import java.util.List;
 
 @Service
 public class MongoAdminService implements AdminService {
-  private static final int DEFAULT_PAGE_START = 0;
-  private static final int DEFAULT_PAGE_SIZE = 100;
   private final CompanyRepository companyRepository;
   private final UserRepository userRepository;
   private final PasscodeService passcodeService;
@@ -55,15 +53,9 @@ public class MongoAdminService implements AdminService {
 
   @Override
   public List<Company> getCompanies(Integer page, Integer pageSize) {
-    Pageable pageable = getPageable(page, pageSize);
+    Pageable pageable = PageableHelper.getPageable(page, pageSize);
     Page<Company> companies = companyRepository.findAll(pageable);
     return companies.getContent();
-  }
-
-  private Pageable getPageable(Integer page, Integer pageSize) {
-    int pageInt = (page == null) ? DEFAULT_PAGE_START : page;
-    int pageSizeInt = (pageSize == null) ? DEFAULT_PAGE_SIZE : pageSize;
-    return new PageRequest(pageInt, pageSizeInt);
   }
 
   @Override
@@ -115,9 +107,10 @@ public class MongoAdminService implements AdminService {
   @Override
   public User createCompanyUser(String companyId, User user) {
     Company company = companyRepository.findOne(companyId);
+    user.setId(null);
     user.setCompany(company);
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-    return userRepository.insert(user);
+    return userRepository.save(user);
   }
 
   @Override

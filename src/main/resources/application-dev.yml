@@ -1,1 +1,3 @@
 spring.profiles: dev
+
+app.security.token.lifetime: 1440

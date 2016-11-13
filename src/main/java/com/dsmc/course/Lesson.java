@@ -2,7 +2,7 @@ package com.dsmc.course;
 
 import com.dsmc.common.domain.Address;
 import com.dsmc.instructor.Instructor;
-import com.dsmc.student.Student;
+import com.dsmc.student.domain.Student;
 import com.dsmc.user.domain.Company;
 import com.dsmc.user.domain.User;
 

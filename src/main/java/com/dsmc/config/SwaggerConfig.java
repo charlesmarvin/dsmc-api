@@ -5,13 +5,12 @@ import org.springframework.context.annotation.Configuration;
 
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-/**
- * Created by charlesmarvin on 7/9/16.
- */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
@@ -21,6 +20,19 @@ public class SwaggerConfig {
         .select()
         .apis(RequestHandlerSelectors.any())
         .paths(PathSelectors.ant("/api/**"))
-        .build();
+        .build()
+        .apiInfo(apiInfo());
+  }
+
+  private ApiInfo apiInfo() {
+    Contact contact = new Contact("Marvin Charles", "24sixty.io", "info@24sixty.io");
+    return new ApiInfo(
+        "DSMC API",
+        "",
+        "1.0.0",
+        "",
+        contact,
+        "",
+        "");
   }
 }

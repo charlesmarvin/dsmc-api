@@ -18,3 +18,4 @@ app.mailgun.endpoint: ${app.mailgun.endpoint}
 app.security.admin.username: ${app.security.admin.username}
 app.security.admin.password: ${app.security.admin.password}
 app.security.admin.role: ${app.security.admin.role}
+app.security.token.lifetime: ${app.security.token.lifetime}

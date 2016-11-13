@@ -22,14 +22,17 @@ class StatelessTokenService {
   private final static Logger LOG = LoggerFactory.getLogger(StatelessTokenService.class);
   private final static String TOKEN_PREFIX = "Bearer ";
   private final String secret;
+  private final int tokenLifetimeMinutes;
 
   @Autowired
-  public StatelessTokenService(@Value("${app.security.encryption.key}") String secret) {
+  public StatelessTokenService(@Value("${app.security.encryption.key}") String secret,
+                               @Value("${app.security.token.lifetime}") int tokenLifetimeMinutes) {
     this.secret = secret;
+    this.tokenLifetimeMinutes = tokenLifetimeMinutes;
   }
 
   String buildToken(Map<String, Object> claims) {
-    LocalDateTime exp = LocalDateTime.now(ZoneId.of("Z")).plus(1, ChronoUnit.DAYS);
+    LocalDateTime exp = LocalDateTime.now(ZoneId.of("Z")).plus(tokenLifetimeMinutes, ChronoUnit.MINUTES);
     return Jwts.builder()
         .setClaims(claims)
         .setExpiration(Date.from(exp.atZone(ZoneId.systemDefault()).toInstant()))
